@@ -1,6 +1,7 @@
 version: 2.1
 
 jobs:
+  
   print_hello:
     docker:
       - image: circleci/node:13.8.0
@@ -29,6 +30,6 @@ workflows:
     jobs:
       - print_hello
       - print_world:
-          - requires:
+          requires:
               - print_hello
       - print_env_var
