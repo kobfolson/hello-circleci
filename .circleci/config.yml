@@ -1,30 +1,31 @@
 version: 2.1
 
+executors:
+  my-executor:
+    docker:
+      - image: cimg/base:2021.04
+    working_directory: /tmp
+
 jobs:
-  print_hello:
-    docker:
-      - image: circleci/node:13.8.0
+  save_hello_world_output:
+    executor: my-executor
     steps:
-      - checkout
-      - run: echo Hello
+      - run: mkdir -p workspace
+      - run: echo "hello world, ${MY_NAME}" > workspace/output.txt
+      - persist_to_workspace:
+          root: workspace
+          paths:
+            - output.txt
 
-  print_world:
-    docker:
-      - image: circleci/node:13.8.0
+  print_output_file:
+    executor: my-executor
     steps:
-      - checkout
-      - run: echo World
-
-  print_env_var:
-    docker:
-      - image: circleci/node:13.8.0
-    steps:
-      - checkout
-      - run: echo $MY_NAME
+      - attach_to_workspace:
+          at: /tmp/workspace
+      - run: cat /tmp/workspace/output.txt
 
 workflows:
   say-hello-workflow:
     jobs:
-      - print_env_var
-      - print_hello
-      - print_world
+      - save_hello_world_output
+      - print_output_file
