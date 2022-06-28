@@ -20,7 +20,7 @@ jobs:
   print_output_file:
     executor: my-executor
     steps:
-      - attach_to_workspace:
+      - attach_workspace:
           at: /tmp/workspace
       - run: cat /tmp/workspace/output.txt
 
